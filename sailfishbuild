@@ -48,17 +48,7 @@ fi
 
 if [ $1 == "deploy" ] 
 then
-
-    # Try to SSH connection
-    ssh -p 2223 mersdk@localhost "exit" 2> /dev/null
-
-    if [ $? != 0 ]
-    then
-        echo "Impossible to SSH into Sailfish emulator. Check if it is launched"
-        echo "and that you have enabled key based login"
-        exit -1
-    fi
-
+    # Deploy is not worked yet
     ssh -p 2222 mersdk@localhost "cd $relative_path && mb2 deploy"
     exit 0
 fi
