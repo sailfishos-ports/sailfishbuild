@@ -33,7 +33,7 @@ fi
 
 if [ $1 == "stop" ] 
 then
-    ssh -p 2222 root@localhost "cd $relative_path && shutdown now" 2> /dev/null
+    ssh -p 2222 root@localhost "shutdown now" 2> /dev/null
     exit 0
 fi
 
