@@ -1,0 +1,64 @@
+#!/bin/bash
+if [ $1 != "start" ] && [ $1 != "stop" ] && [ $1 != "make" ] && [ $1 != "deploy" ] 
+then
+    echo "salifishbuild start to start MerSDK VM"
+    echo "salifishbuild stop to stop MerSDK VM"
+    echo "salifishbuild make to compile a project"
+    echo "salifishbuild deploy to deploy to emulator"
+    exit -1
+fi
+
+# Try to SSH connection
+ssh -p 2222 mersdk@localhost "exit" 2> /dev/null
+vm_status=$?
+
+if [ $1 == "start" ] 
+then
+    if [ $vm_status != 0 ]
+    then
+        VBoxManage startvm "MerSDK" > /dev/null
+        exit 0
+    else
+        echo "Mer SDK already started."
+        exit -1
+    fi
+fi
+
+if [ $? != 0 ]
+then
+    echo "Impossible to SSH into Mer SDK. Check if it is launched"
+    echo "and that you have enabled key based login"
+    exit -1
+fi
+
+if [ $1 == "stop" ] 
+then
+    ssh -p 2222 root@localhost "cd $relative_path && shutdown now" 2> /dev/null
+    exit 0
+fi
+
+# Get the relative path of the project
+relative_path=/home/mersdk${PWD#${HOME}}
+
+if [ $1 == "make" ] 
+then
+    ssh -p 2222 mersdk@localhost "cd $relative_path && mb2 qmake && mb2 make"
+    exit 0
+fi
+
+if [ $1 == "deploy" ] 
+then
+
+    # Try to SSH connection
+    ssh -p 2223 mersdk@localhost "exit" 2> /dev/null
+
+    if [ $? != 0 ]
+    then
+        echo "Impossible to SSH into Sailfish emulator. Check if it is launched"
+        echo "and that you have enabled key based login"
+        exit -1
+    fi
+
+    ssh -p 2222 mersdk@localhost "cd $relative_path && mb2 deploy"
+    exit 0
+fi
