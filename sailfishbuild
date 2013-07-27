@@ -24,7 +24,7 @@ then
     fi
 fi
 
-if [ $? != 0 ]
+if [ $vm_status != 0 ]
 then
     echo "Impossible to SSH into Mer SDK. Check if it is launched"
     echo "and that you have enabled key based login"
